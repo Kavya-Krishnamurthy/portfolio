@@ -43,3 +43,21 @@ footer {
   color: white;
   margin-top: 50px;
 }
+
+.card-link{
+    text-decoration:none;
+    color:inherit;
+}
+
+.card{
+    background:rgba(255,255,255,0.05);
+    border-radius:16px;
+    padding:24px;
+    transition:all 0.3s ease;
+    cursor:pointer;
+}
+
+.card:hover{
+    transform:translateY(-10px);
+    box-shadow:0 15px 40px rgba(127,90,240,0.35);
+}

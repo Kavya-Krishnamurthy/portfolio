@@ -3,7 +3,9 @@ body {
   margin: 0;
   background: #f8f9fb;
   color: #222;
-  line-height: 1.0;
+  line-height: 1.9;
+  letter-spacing: 0.2px;
+  font-size: 17px; 
 }
 
 header {
@@ -176,7 +178,10 @@ h2 {
 }
 
 p {
-    margin-bottom: 22px;
+    margin-bottom: 1.5rem;
+    font-size: 1.05rem;
+}
+
 }
 
 blockquote {

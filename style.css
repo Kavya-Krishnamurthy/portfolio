@@ -3,7 +3,8 @@ body {
   margin: 0;
   background: #f8f9fb;
   color: #222;
-  line-height: 1.0;
+  line-height: 1.9;
+  letter-spacing: 0.2px;
 }
 
 header {

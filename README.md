@@ -1,6 +1,6 @@
 ## About This Website
 
-Built with plain HTML, CSS, curiosity, and probably more cups of coffee than strictly necessary.
+This website was built entirely by me using plain HTML and CSS. There are no heavy frameworks, build tools, or complex JavaScript libraries behind it. Just a simple, handcrafted space on the web.
 
 This website is my corner of the internet for documenting projects, sharing what I'm learning, and writing about topics that capture my attention. I deliberately kept the technology simple so I could focus on the content, ideas, and learning process rather than the tooling.
 

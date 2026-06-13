@@ -69,3 +69,79 @@ for i in range(0, len(mrna), 3):
     protein += amino_acid
 print("Codons:", "|".join(codons))
 print("Protein:", protein)
+
+
+DNA Validation
+
+Checks whether a DNA sequence contains only valid nucleotides (A, T, G, C)
+Nucleotide Count
+
+Counts the number of:
+Adenine (A)
+Thymine (T)
+Guanine (G)
+Cytosine (C)
+GC Content Analysis
+
+Calculates GC content percentage
+Classifies sequences as:
+High GC Content
+Low GC Content
+Complement Sequence
+
+Generates the complementary DNA strand
+Reverse Complement
+
+Generates the reverse complement sequence
+Mutation Detection
+
+Compares a reference sequence and a sample sequence
+Reports mutation positions and nucleotide changes
+DNA → mRNA Transcription
+
+Converts a DNA template strand into mRNA
+mRNA → Protein Translation
+
+Splits mRNA into codons
+Translates codons into amino acids
+Detects stop codons
+Example
+
+Input
+
+DNA: ATAGGGCCTTAAA
+Output
+
+Valid DNA sequence
+GC Content: 38.46 %
+
+Complement: TATCCCGGAATTT
+
+Reverse Complement: TTTAAGGCCCTAT
+
+mRNA: UAUCCCGGAAUUU
+
+Protein: YPGI
+How to Run
+
+Clone the repository
+git clone https://github.com/famithav/dna-sequence-analyzer.git
+Navigate to the project folder
+cd dna-sequence-analyzer
+Run the program
+python dna_analyzer.py
+Technologies Used
+
+Python
+Dictionaries
+Loops
+Conditional Statements
+String Manipulation
+Future Improvements
+
+FASTA file support
+Restriction enzyme analysis
+Open Reading Frame (ORF) detection
+DNA sequence alignment
+Disease mutation database integration
+Graphical User Interface (GUI)

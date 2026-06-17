@@ -1,3 +1,6 @@
+
+#this id code; cannot use directky in blog
+
 valid = ("A", "T", "G", "C")
 sequence = input("DNA:").upper()
 is_valid = True

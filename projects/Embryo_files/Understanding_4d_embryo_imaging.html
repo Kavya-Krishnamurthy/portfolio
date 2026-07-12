@@ -70,7 +70,46 @@ like :
   <p>This assumption survived approximately five minutes.
 The first microscopy dataset I explored did not contain ordinary images.
 Instead, it introduced me to multidimensional scientific data structures, unfamiliar storage formats, and the realization that biological experiments rarely fit inside traditional image representations. Nature, it turns out, has little interest in JPEGs.</p>
-<nav> 
+
+  <h1> The Dataset That Refused To Behave Like A Photograph</h1>
+<p>One of the earliest surprises was discovering that microscopy experiments are frequently stored using formats designed for large multidimensional datasets rather than conventional image files.
+Initially, this felt unnecessarily complicated.
+After understanding the scale of the data, it became obvious why.
+One embryo contained data organized approximately as
+(Time, Depth, Height, Width)
+rather than
+(Height, Width)
+The dataset was therefore not an image.
+Nor was it simply a video.
+It represented a sequence of three-dimensional observations acquired over developmental time.
+In hindsight, describing it as a four-dimensional movie feels much more accurate than calling it an image dataset. </p>
+  
+<h1>The Four Numbers That Explained Everything</h1>
+<p>One of the first commands executed during exploration returned </p>
+  <div><em>
+  image.shape
+  (100, 64, 256, 256) 
+  </em></div> 
+
+  <p>At first glance these appeared to be arbitrary dimensions. They later became one of the most informative observations made during this phase of the project.
+
+    <div> <em>
+      100   Time points
+      64    Optical slices
+      256   Height
+      256   Width
+    </em> </div>
+  
+<p>This single output completely changed my mental model.
+Instead of analyzing one photograph, I was examining one hundred developmental time points, each consisting of sixty-four optical sections through the embryo.
+The implications for computer vision immediately became obvious.
+Every cell exists simultaneously in space and time.</p>
+  
+  
+  
+  
+  
+  <nav> 
 <ul>
   <li> </li>
   <li> </li>

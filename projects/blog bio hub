@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title> </title>
+  <title>The Embryo Files </title>
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -11,11 +11,13 @@
 <body>
 <header>
 
-    <h1> Understanding Four-Dimensional Embryo Imaging Through Computational Exploration
-Research Notes from an AI Engineer Exploring Developmental Biology
+    <h1> The Embryo Files 01:  Understanding Four-Dimensional Embryo Imaging Through Computational Exploration
+
  </h1>
 
     <p class="subtitle">
+       Research Notes from an bioinformatician Exploring Developmental Biology
+
         Author: Kavya K Murthy.
     </p>
 

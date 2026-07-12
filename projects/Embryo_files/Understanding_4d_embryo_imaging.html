@@ -47,7 +47,7 @@ That question became the starting point of this research journal.</p>
 
   <p> Although this document is written from the perspective of someone exploring computational biology from an engineering background, every concept is intentionally explained so that readers without prior biological knowledge can follow along. The objective is not merely to build an AI model, but to understand why such models are needed in the first place.</p>
 
- <h1> Why This Research ? </h1>
+ <h2> Why This Research ? </h2>
 <p>Most computer vision problems begin with an image.
 This one begins with life itself. Imagine recording every division of a single fertilized cell until it eventually becomes an entire organism.
 Every daughter cell. Every movement. Every decision.
@@ -61,7 +61,7 @@ The more I read about developmental biology, the more I realized the objective i
 The objective is understanding their history.
 That distinction completely changes both the biology and the AI.</p>
 
-   <h1> My Initial (Incorrect) Assumption</h1>
+   <h2> My Initial (Incorrect) Assumption</h2>
 <p>I initially assumed biological imaging worked similarly to conventional computer vision.
 I expected something resembling the pipeline
 like : 
@@ -71,7 +71,7 @@ like :
 The first microscopy dataset I explored did not contain ordinary images.
 Instead, it introduced me to multidimensional scientific data structures, unfamiliar storage formats, and the realization that biological experiments rarely fit inside traditional image representations. Nature, it turns out, has little interest in JPEGs.</p>
 
-  <h1> The Dataset That Refused To Behave Like A Photograph</h1>
+  <h2> The Dataset That Refused To Behave Like A Photograph</h2>
 <p>One of the earliest surprises was discovering that microscopy experiments are frequently stored using formats designed for large multidimensional datasets rather than conventional image files.
 Initially, this felt unnecessarily complicated.
 After understanding the scale of the data, it became obvious why.
@@ -84,7 +84,7 @@ Nor was it simply a video.
 It represented a sequence of three-dimensional observations acquired over developmental time.
 In hindsight, describing it as a four-dimensional movie feels much more accurate than calling it an image dataset. </p>
   
-<h1>The Four Numbers That Explained Everything</h1>
+<h2>The Four Numbers That Explained Everything</h2>
 <p>One of the first commands executed during exploration returned </p>
   <div><em>
   <p>image.shape</p>

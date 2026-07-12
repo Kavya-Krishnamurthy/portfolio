@@ -1,13 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> </title>
+  <link rel="stylesheet" href="style.css">
+</head>
 
 
+<body>
+<header>
 
-
-
-Understanding Four-Dimensional Embryo Imaging Through Computational Exploration
+    <h1> Understanding Four-Dimensional Embryo Imaging Through Computational Exploration
 Research Notes from an AI Engineer Exploring Developmental Biology
-Author: Kavya K Murthy.
+ </h1>
+
+    <p class="subtitle">
+        Author: Kavya K Murthy.
+    </p>
+
+    <p class="post-meta">
+        07 2026 • Tag • tag • tag
+    </p>
+
+    <nav>
+        <ul class="nav-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../case-studies.html">Case Studies</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+</header>
+<div class="blog-container">
+
+<div class="card">
+<p>
+
 Abstract
 Can a computer reconstruct the developmental history of an organism simply by observing cells under a microscope?
 That question became the starting point of this research journal.
 Rather than immediately applying machine learning models, this work documents the process of understanding the biological problem itself. The first phase focuses on developmental biology, fluorescence microscopy, multidimensional imaging, and the computational challenges associated with interpreting four-dimensional microscopy datasets.
 Although this document is written from the perspective of someone entering computational biology from a software engineering background, every concept is intentionally explained so that readers without prior biological knowledge can follow along. The objective is not merely to build an AI model, but to understand why such models are needed in the first place.
+
+
+<em> quote </em>
+
+<nav> 
+<ul>
+  <li> </li>
+  <li> </li>
+</ul>
+</nav> 
+
+  
+</p>
+
+</div>
+</div>
+  <footer>
+    <p>© 2026 Kavya Krishnamurthy</p>
+</footer>
+
+  
+</p>  
+<div class="card">
+
+
+
+
+

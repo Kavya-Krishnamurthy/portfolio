@@ -87,7 +87,7 @@ zarr.open() opens the dataset but does not load the entire embryo into memory.</
 </em></div> 
   
 <p><b>Meaning:</b></p>
-<p>he embryo itself is not an image. It is a container holding multiple arrays and metadata.</p>
+<p>The embryo itself is not an image. It is a container holding multiple arrays and metadata.</p>
 <p>Similar to:</p>
 <p>Folder</p>
    <p>└── Images</p> 
@@ -95,14 +95,18 @@ zarr.open() opens the dataset but does not load the entire embryo into memory.</
     <p>└── Labels</p>
 
 <h2>Step 3 — Looking Inside</h2>
-list(embryo.keys())
-Output
-['0']
-Meaning
-The Zarr group contains one array named "0".
+<div class="highlight-box"><em>
+ <p>list(embryo.keys())</p>
+</em></div> 
+  
+  <div class="highlight-box"><em>
+ <p> Output: ['0']</p>
+</em></div> 
+  <p><b>Meaning:</b></p>
+<p>The Zarr group contains one array named "0".</p>
 
-Step 4 — Accessing the Image Data
-image = embryo["0"]
+<h2>Step 4 — Accessing the Image Data</h2>
+<p>image = embryo["0"]</p>
 Now
 type(image)
 Output

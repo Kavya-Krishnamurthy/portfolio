@@ -106,13 +106,16 @@ zarr.open() opens the dataset but does not load the entire embryo into memory.</
 <p>The Zarr group contains one array named "0".</p>
 
 <h2>Step 4 — Accessing the Image Data</h2>
-<p>image = embryo["0"]</p>
-Now
-type(image)
-Output
-zarr.core.array.Array
-Meaning
-This is the actual multidimensional microscopy image.
+  <div class="highlight-box"><em>
+    <p>image = embryo["0"]</p>
+    <p>type(image)</p>
+    </em></div> 
+
+  <div class="highlight-box"><em>
+<p>Output</p>
+<p>zarr.core.array.Array</p>
+<p><b>Meaning:</b></p>
+<p>This is the actual multidimensional microscopy image.</p>
 
 Step 5 — Understanding the Dimensions
 image.shape

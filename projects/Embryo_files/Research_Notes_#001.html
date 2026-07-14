@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Embryo Files </title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+<header>
+
+    <h1> Research Notes #001 : Understanding 4D Fluorescence Microscopy Data</h1>
+
+    <p class="subtitle">
+       Research Notes exploring Developmental Biology , Computational Biology & AI
+
+       <p> Author: Kavya Krishnamurthy.</p>
+      <p>B.E. Computer Science | M.Tech. Bioinformatics</p>
+    </p>
+
+    <p class="post-meta">
+        July 2026 • AI • Bioinformatics • Computational Biology
+    </p>
+
+    <nav>
+        <ul class="nav-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../case-studies.html">Case Studies</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+</header>
+<div class="blog-container">
+
+<div class="card">
+<h2>Objective</h2>
+<p>The objective of this phase was not to build an AI model.Before solving any AI problem, understanding the data is essential.
+<p>Instead, the goal was to understand: </p>
+  
+<ul>
+  <li>How developmental biology data is stored. </li>
+  <li> What a microscopy dataset actually contains.</li>
+  <li>How computers interpret biological images.</li>
+  <li>How to prepare microscopy images for computational analysis.</li>
+</ul>
+</nav> 
+
+
+Learning Outcomes
+After completing this phase, I understand:
+What developmental microscopy data looks like.
+Why microscopy datasets are 4-dimensional.
+How Zarr stores biological images.
+How Python reads multidimensional datasets.
+Why preprocessing is required before computer vision algorithms.
+How classical computer vision can detect candidate nuclei.
+Step 1 — Opening the Dataset
+The dataset was first opened as a Zarr Group.
+import zarr
+
+embryo = zarr.open(
+    train_dir / "6bba_cf35214c.zarr",
+    mode="r"
+)
+What happens here?
+Unlike JPEG or PNG files, biological microscopy experiments are stored as hierarchical datasets.
+zarr.open() opens the dataset but does not load the entire embryo into memory.
+
+Instead, it creates a pointer to the data.
+
+Think of it as opening a library catalogue rather than reading every book.
+
+Step 2 — Understanding the Object
+type(embryo)
+Output
+zarr.core.group.Group
+Meaning
+The embryo itself is not an image.
+It is a container holding multiple arrays and metadata.
+
+Similar to
+
+Folder
+    Images
+    Metadata
+    Labels
+Step 3 — Looking Inside
+list(embryo.keys())
+Output
+['0']
+Meaning
+The Zarr group contains one array named "0".
+
+Step 4 — Accessing the Image Data
+image = embryo["0"]
+Now
+type(image)
+Output
+zarr.core.array.Array
+Meaning
+This is the actual multidimensional microscopy image.
+
+Step 5 — Understanding the Dimensions
+image.shape
+Output
+(100,64,256,256)
+This became one of the most important observations.
+100 → Time
+
+64 → Z slices
+
+256 → Height
+
+256 → Width
+This means
+The embryo is not one image.
+
+It is
+
+100 × 64
+
+individual microscope slices.
+
+In total,
+
+100 × 64
+
+=
+
+6400 images
+representing one developing embryo.
+Step 6 — Extracting One Image
+slice_2d = image[0,32]
+Explanation
+Time = 0
+
+↓
+
+Z Slice = 32
+Result
+A single 2D optical slice through the embryo.
+
+Step 7 — Displaying the Image
+plt.imshow(slice_2d,cmap="gray")
+plt.axis("off")
+plt.show()
+Explanation
+Matplotlib converts the numerical pixel intensities into a grayscale image.
+
+Important realization
+
+Computers do not see images.
+
+They see matrices.
+
+Humans interpret those matrices as images.
+
+Step 8 — Exploring Multiple Z Slices
+z_slices=[0,10,20,30,40,50]
+Each slice was displayed.
+Observation
+
+Different slices contain different numbers of nuclei.
+Slice 0 contains relatively few nuclei.
+Slices around 20–50 contain many nuclei.
+Nuclei appear larger or smaller depending on where the slice intersects them.
+Scientific Interpretation
+A nucleus is three-dimensional.
+
+Cutting through its center produces a larger circle.
+
+Cutting near the edge produces a smaller circle.
+
+Step 9 — Interactive Z Viewer
+@interact(z=(0,63))
+Purpose
+Instead of manually changing
+
+image[0,z]
+an interactive slider allows continuous exploration through the embryo.
+This mimics software used by computational biologists such as Napari and Fiji.
+
+Step 10 — Pixel Intensity Distribution
+plt.hist(slice_2d.ravel(),bins=100)
+Explanation
+ravel() converts the 2D image into a 1D vector.
+
+Instead of visualizing location,
+
+we visualize brightness.
+
+Purpose
+
+To understand how pixel intensities are distributed.
+
+This is useful for selecting thresholds in later image processing steps.
+
+Step 11 — Checking Intensity Range
+slice_2d.min(),slice_2d.max()
+Output
+8
+
+1380
+Interpretation
+The microscope stores raw fluorescence intensity values.
+
+This is not a standard image scaled between 0–255 or 0–1.
+
+Step 12 — Why Blob Detection Initially Failed
+First attempt
+blobs = blob_dog(
+    slice_2d,
+    min_sigma=2,
+    max_sigma=6,
+    threshold=0.05
+)
+
+len(blobs)
+Output
+0
+Interpretation
+The algorithm did not detect any nuclei.
+
+Instead of assuming the algorithm was incorrect,
+
+the question became
+
+Why?
+This marks the transition from programming to scientific debugging.
+Step 13 — Image Normalization
+from skimage import exposure
+
+slice_norm = exposure.rescale_intensity(
+    slice_2d,
+    out_range=(0,1)
+)
+Purpose
+Rescale raw microscope intensities
+
+8 → 1380
+into
+0 → 1
+This improves the performance of many computer vision algorithms.
+Think of it like changing units from centimeters to meters.
+
+The object remains unchanged.
+
+Only the scale changes.
+
+Step 14 — Verifying Normalization
+slice_norm.min(),slice_norm.max()
+Output
+0.0
+
+1.0
+Confirmation
+The image is now normalized.
+
+Step 15 — Blob Detection
+from skimage.feature import blob_dog
+
+blobs = blob_dog(
+    slice_norm,
+    min_sigma=2,
+    max_sigma=6,
+    threshold=0.05
+)
+Result
+len(blobs)
+Output
+24
+Interpretation
+The algorithm identified
+
+24 candidate nuclei.
+
+These are candidate detections, not confirmed biological cells.
+
+Understanding Difference of Gaussians (DoG)
+DoG is a classical computer vision algorithm.
+Instead of understanding biology,
+
+it searches for
+
+bright
+approximately circular
+similarly sized
+objects.
+Those objects are called blobs.
+
+Since nuclei appear as bright blobs,
+
+DoG is an effective baseline detector.
+
+Blob Detection Output
+Each detected blob is represented as
+[y,
+
+x,
+
+sigma]
+Meaning
+y
+
+↓
+
+Vertical coordinate
+
+x
+
+↓
+
+Horizontal coordinate
+
+sigma
+
+↓
+
+Estimated radius
+The algorithm therefore returns measurements,
+not images.
+
+Current Pipeline
+Microscope
+
+↓
+
+Raw Image
+
+↓
+
+Zarr Storage
+
+↓
+
+Python
+
+↓
+
+Extract One Slice
+
+↓
+
+Visualize Image
+
+↓
+
+Explore Z Dimension
+
+↓
+
+Study Pixel Intensities
+
+↓
+
+Normalize Image
+
+↓
+
+Blob Detection
+
+↓
+
+Candidate Nuclei
+Biological Understanding Achieved
+This phase also strengthened understanding of:
+Developmental Biology
+Cell Lineage
+Cell Fate
+Stem Cells
+Fluorescence Microscopy
+Four-Dimensional Imaging
+Z slices
+Time-series microscopy
+Why nuclei appear different sizes
+Why preprocessing matters before AI
+Important Lessons Learned
+Lesson 1
+Understanding the biological experiment is more important than selecting an AI model.
+Lesson 2
+Microscopy images are measurements, not ordinary photographs.
+Lesson 3
+Every image processing algorithm assumes something about the input data.
+Understanding those assumptions is essential.
+
+Lesson 4
+Scientific programming begins with asking
+Why did this happen?
+rather than
+How do I make the code work?
+Where We Are Now
+Understanding Biology         ✅
+
+Understanding Dataset         ✅
+
+Opening Zarr                 ✅
+
+Visualizing Embryo           ✅
+
+Exploring 3D Structure       ✅
+
+Image Statistics             ✅
+
+Normalization                ✅
+
+Blob Detection               ✅
+
+----------------------------------
+
+NEXT
+
+⬜ Visualize detected nuclei
+
+⬜ Tune detector
+
+⬜ Detect all nuclei
+
+⬜ Compare across Z
+
+⬜ Move into Time
+
+⬜ Build cell tracker
+
+⬜ Construct lineage tree
+Final Reflection
+At the beginning of this journey, the primary goal appeared to be building an AI model capable of tracking cells. However, this initial phase revealed a more fundamental truth: before teaching a computer to understand biology, the researcher must first understand how biology is represented as data.
+A seemingly simple microscopy image is, in reality, a four-dimensional scientific measurement. Learning to navigate, interpret, preprocess, and analyze that data forms the foundation upon which every subsequent computer vision or machine learning method will be built.
+
+⭐ My suggestion
+From now on, I'd like us to maintain these notes like a real lab notebook. By the end of the project, you'll have 20–30 research notes that read like the evolution of a computational biologist. Someone reviewing your portfolio won't just see code—they'll see how you learned to think, debug, question assumptions, and build increasingly sophisticated solutions. In my opinion, that will be one of the strongest assets in your PhD application.
+Suggested based on your interests
+Ad

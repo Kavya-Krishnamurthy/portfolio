@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Bioinformatics File Formats | Kavya Krishnamurthy</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+<header>
+
+  <h1>The Bioinformatics File Formats I Wish Someone Had Explained Earlier</h1>
+<p class="subtitle">
+      
+    </p>
+
+    <p class="post-meta">
+        July 2025 • File Formats • Bioinformatics
+    </p>
+
+    <nav>
+        <ul class="nav-links">
+            <li><a href="../index.html">Home</a></li>
+            <li><a href="../case-studies.html">Case Studies</a></li>
+            <li><a href="../contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+</header>
+
+<div class="blog-container">
+
+<div class="card">
+
+  <p>
+    When I first started learning bioinformatics, I expected the difficult part to be understanding genetics, sequencing technologies, or the biological concepts behind the analyses.
+  </p>
+
+  <p>
+    I was wrong.
+  </p>
+
+  <p>
+    The first thing that truly confused me was the endless stream of file formats.
+  </p>
+
+  <p>
+    FASTA. FASTQ. BAM. SAM. VCF. GTF. GFF.
+  </p>
+
+  <p>
+    Every tutorial seemed to assume I already knew what they were. Every workflow casually jumped from one file type to another without explaining why. Somewhere between downloading a dataset and running my first analysis, I found myself staring at folders full of unfamiliar file extensions and wondering whether I was expected to know the difference.
+  </p>
+
+  <p>
+    At the time, they all looked like random collections of letters.
+  </p>
+
+  <p>
+    What I eventually realized is that these file formats are not arbitrary. Each exists to answer a very specific biological question. Once I understood the role each one played, bioinformatics workflows suddenly became much easier to follow.
+  </p>
+
+  <p>
+    In this article, I want to explain the major bioinformatics file formats the way I wish they had been explained to me when I was starting out—not as technical specifications, but as pieces of a larger story.
+  </p>
+
+  <h2>Before We Begin: The Journey of Biological Data</h2>
+
+  <p>
+    One of the most useful mental models I have found is to think of bioinformatics as a process of gradually adding meaning to biological data.
+  </p>
+
+  <p>
+    Imagine a DNA sample entering a sequencing machine.
+  </p>
+
+  <p>
+    At first, all we have are raw sequences.
+  </p>
+
+  <p>
+    Then we determine how reliable those sequences are.
+  </p>
+
+  <p>
+    Next, we figure out where they belong in a genome.
+  </p>
+
+  <p>
+    After that, we identify differences from a reference genome.
+  </p>
+
+  <p>
+    Finally, we annotate those differences and interpret their biological significance.
+  </p>
+
+  <p>
+    Different file formats exist because each stage of that journey requires storing different kinds of information.
+  </p>
+
+  <p>
+    Let's follow that journey together.
+  </p>
+
+  <hr>
+
+  <h2>FASTA: The Starting Point</h2>
+
+  <p>
+    The first bioinformatics file format I learned was FASTA, and fortunately, it is also the simplest.
+  </p>
+
+  <p>
+    A FASTA file stores biological sequences. These sequences may represent DNA, RNA, proteins, individual genes, or even entire genomes.
+  </p>
+
+  <p>
+    At its core, a FASTA file contains only two things:
+  </p>
+
+  <ol>
+    <li>A description line</li>
+    <li>The sequence itself</li>
+  </ol>
+
+  <pre><code>&gt;Gene_1
+ATGCGATCGATCGATCGATC</code></pre>
+
+  <p>
+    The line beginning with the greater-than symbol acts as an identifier. Everything below it is simply the sequence.
+  </p>
+
+  <p>
+    No quality information. No genomic coordinates. No annotations. Just the sequence.
+  </p>
+
+  <p>
+    I like to think of FASTA as the digital equivalent of writing down a DNA sequence in a notebook.
+  </p>
+
+  <p>
+    When a researcher asks, “What is the sequence?”, FASTA is often the answer.
+  </p>
+
+  <hr>
+
+  <h2>FASTQ: When Sequence Alone Isn't Enough</h2>
+
+  <p>
+    One of the first things I learned about sequencing machines is that they make mistakes.
+  </p>
+
+  <p>
+    Modern sequencing technologies are remarkably accurate, but no instrument is perfect. Every nucleotide read comes with a certain degree of confidence.
+  </p>
+
+  <p>
+    This is where FASTQ becomes important.
+  </p>
+
+  <p>
+    FASTQ files contain the sequence itself along with quality scores that indicate how confident the sequencing machine is in each nucleotide call.
+  </p>
+
+  <p>
+    This additional layer of information turns out to be incredibly valuable.
+  </p>
+
+  <p>
+    Consider two DNA sequences that look identical. If one has consistently high-quality scores and the other has poor-quality scores, a researcher would place far more trust in the first one.
+  </p>
+
+  <p>
+    In many ways, FASTQ files represent the sequencing machine's raw observations before any major analysis has been performed.
+  </p>
+
+  <p>
+    Whenever I download sequencing data from a public repository, FASTQ files are usually where the story begins.
+  </p>
+
+  <hr>
+
+  <h2>SAM and BAM: Finding a Home for Every Read</h2>
+
+  <p>
+    When I first encountered sequencing datasets, I assumed that obtaining DNA sequences was the final goal.
+  </p>
+
+  <p>
+    In reality, sequencing is often just the beginning.
+  </p>
+
+  <p>
+    Most sequencing technologies generate millions of short fragments called reads. On their own, these reads are not particularly informative because we do not yet know where they originated within the genome.
+  </p>
+
+  <p>
+    The next step is alignment.
+  </p>
+
+  <p>
+    Alignment algorithms compare sequencing reads against a reference genome and determine their most likely locations.
+  </p>
+
+  <p>
+    The results are stored in SAM files.
+  </p>
+
+  <p>
+    SAM stands for <strong>Sequence Alignment/Map</strong>.
+  </p>
+
+  <p>
+    A SAM file records information such as:
+  </p>
+
+  <ul>
+    <li>Which chromosome a read aligned to</li>
+    <li>The genomic position</li>
+    <li>Alignment quality</li>
+    <li>Mapping statistics</li>
+  </ul>
+
+  <p>
+    The easiest way to think about a SAM file is as a GPS record for sequencing reads.
+  </p>
+
+  <p>
+    Instead of merely telling us what the sequence is, it tells us where that sequence belongs.
+  </p>
+
+  <p>
+    However, there is one practical problem.
+  </p>
+
+  <p>
+    SAM files are enormous.
+  </p>
+
+  <p>
+    A moderately sized sequencing experiment can generate files containing millions of lines. Reading and storing these files quickly becomes inefficient.
+  </p>
+
+  <p>
+    This led to BAM files.
+  </p>
+
+  <p>
+    BAM files contain essentially the same information as SAM files but in a compressed binary format.
+  </p>
+
+  <p>
+    As I gained more experience, I noticed that BAM files appeared far more frequently in real-world workflows because they are faster to process and require significantly less storage space.
+  </p>
+
+  <hr>
+
+  <h2>VCF: Capturing What Makes a Genome Unique</h2>
+
+  <p>
+    One of the most fascinating aspects of genomics is that most human genomes are remarkably similar.
+  </p>
+
+  <p>
+    The differences between individuals are often concentrated in a relatively small number of positions.
+  </p>
+
+  <p>
+    Those differences are called variants.
+  </p>
+
+  <p>
+    A Variant Call Format (VCF) file is designed specifically to store them.
+  </p>
+
+  <p>
+    Rather than storing an entire genome, a VCF records only the locations where a sample differs from a reference genome.
+  </p>
+
+  <p>
+    This seemingly simple idea is incredibly powerful.
+  </p>
+
+  <p>
+    Instead of searching through billions of nucleotides, researchers can focus directly on the positions that may influence disease, drug response, evolution, or other biological traits.
+  </p>
+
+  <p>
+    The first time I worked with a VCF file, I found it helpful to think of it as an edit history for a genome.
+  </p>
+
+  <p>
+    If the reference genome is the original manuscript, the VCF records every location where the sample contains a different letter, insertion, or deletion.
+  </p>
+
+  <hr>
+
+  <h2>GTF and GFF: The Genome's Instruction Manual</h2>
+
+  <p>
+    One realization that surprised me early in my studies was that having a genome sequence is not the same as understanding it.
+  </p>
+
+  <p>
+    Imagine opening a book containing billions of letters without spaces, punctuation, chapter headings, or page numbers.
+  </p>
+
+  <p>
+    That is essentially what a genome looks like without annotation.
+  </p>
+
+  <p>
+    This is where GTF and GFF files become indispensable.
+  </p>
+
+  <p>
+    These files provide annotation information.
+  </p>
+
+  <ul>
+    <li>Where genes begin</li>
+    <li>Where genes end</li>
+    <li>Which regions are exons</li>
+    <li>Which regions are introns</li>
+    <li>Where important biological features are located</li>
+  </ul>
+
+  <p>
+    Whenever I visualize genomic data, these annotation files provide the context that transforms raw coordinates into meaningful biology.
+  </p>
+
+  <p>
+    Without them, identifying genes within a genome would be like trying to locate a single paragraph within a library containing millions of books.
+  </p>
+
+  <hr>
+
+  <h2>Other File Formats Worth Knowing</h2>
+
+  <h3>BED Files</h3>
+
+  <p>
+    Used to represent genomic intervals and regions of interest.
+  </p>
+
+  <ul>
+    <li>Promoters</li>
+    <li>Enhancers</li>
+    <li>Regulatory regions</li>
+    <li>ChIP-seq peaks</li>
+  </ul>
+
+  <h3>CRAM Files</h3>
+
+  <p>
+    A highly compressed alternative to BAM files. Large sequencing centres increasingly rely on CRAM to reduce storage costs.
+  </p>
+
+  <h3>BCF Files</h3>
+
+  <p>
+    A compressed binary version of VCF files that enables faster computational processing.
+  </p>
+
+  <h3>BigWig Files</h3>
+
+  <p>
+    Used to store continuous genomic measurements such as sequencing coverage and expression signals.
+  </p>
+
+  <h3>BigBed Files</h3>
+
+  <p>
+    Compressed versions of BED files optimized for visualization.
+  </p>
+
+  <h3>PDB Files</h3>
+
+  <p>
+    Instead of genomes, PDB files describe three-dimensional protein structures, including the coordinates of individual atoms.
+  </p>
+
+  <p>
+    If FASTA tells us a protein's sequence, PDB tells us what that protein actually looks like in three-dimensional space.
+  </p>
+
+  <hr>
+
+  <h2>The Bigger Picture</h2>
+
+  <p>
+    Looking back, I think one reason these file formats seem intimidating is that students are often introduced to them individually rather than as part of a larger workflow.
+  </p>
+
+  <p>
+    Once I understood the questions each format was trying to answer, everything became much clearer.
+  </p>
+
+  <ul>
+    <li><strong>FASTA:</strong> What is the sequence?</li>
+    <li><strong>FASTQ:</strong> How confident are we in that sequence?</li>
+    <li><strong>SAM/BAM:</strong> Where does that sequence belong?</li>
+    <li><strong>VCF:</strong> How does this genome differ from the reference?</li>
+    <li><strong>GTF/GFF:</strong> What biological features exist at this location?</li>
+  </ul>
+
+  <p>
+    Seen through that lens, these files are not merely technical artefacts. They are milestones in the journey from raw biological material to scientific insight.
+  </p>
+
+  <p>
+    And for anyone beginning their bioinformatics journey, understanding these formats is one of the most valuable investments you can make. Once you learn to read the language of biological data, many of the workflows that initially seem overwhelming start to make a great deal more sense.
+  </p>
+</div>
+</div>
+
+<footer>
+    <p>© 2026 Kavya Krishnamurthy</p>
+</footer>
+
+</body>
+</html>

@@ -1,27 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>The Embryo Files </title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Embryo Files | Research Notes #001</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 
-
 <body>
+
 <header>
 
-    <h1> Research Notes #001 : Understanding 4D Fluorescence Microscopy Data</h1>
+    <h1>Research Notes #001 — Understanding 4D Fluorescence Microscopy Data</h1>
 
     <p class="subtitle">
-       Research Notes exploring Developmental Biology , Computational Biology & AI
+        Exploring Developmental Biology, Computational Biology & Artificial Intelligence
+    </p>
 
-       <p> Author: Kavya Krishnamurthy.</p>
-      <p>B.E. Computer Science | M.Tech. Bioinformatics</p>
+    <p>
+        <strong>Author:</strong> Kavya Krishnamurthy<br>
+        B.E. Computer Science Engineering | M.Tech. Bioinformatics
     </p>
 
     <p class="post-meta">
-        July 2026 • AI • Bioinformatics • Computational Biology
+        July 2026 • Developmental Biology • Bioinformatics • Computer Vision • AI
     </p>
 
     <nav>
@@ -33,184 +36,393 @@
     </nav>
 
 </header>
+
 <div class="blog-container">
 
 <div class="card">
-<h2>Objective</h2>
-<p>The objective of this phase was not to build an AI model yet .Before solving any AI problem, understanding the data is essential.
-<p>Instead, the goal was to understand: </p>
-  
-<ul>
-  <li>How developmental biology data is stored. </li>
-  <li>What a microscopy dataset actually contains.</li>
-  <li>How computers interpret biological images.</li>
-  <li>How to prepare microscopy images for computational analysis.</li>
-</ul>
-</nav> 
 
+<h2>Objective</h2>
+
+<p>
+The objective of this phase was <strong>not</strong> to build an artificial intelligence model immediately.
+Before solving any AI problem, it is essential to understand the data itself.
+In biological research, the quality of the analysis depends on understanding how experiments are performed, how the resulting data are stored, and what each image actually represents.
+</p>
+
+<p>
+Rather than jumping directly into machine learning, this notebook focuses on building a strong foundation by exploring the structure of fluorescence microscopy datasets and learning how computers interpret biological images.
+</p>
+
+<p>During this phase, the goal was to understand:</p>
+
+<ul>
+    <li>How developmental biology microscopy data is stored.</li>
+    <li>What a fluorescence microscopy dataset actually contains.</li>
+    <li>Why microscopy data is four-dimensional.</li>
+    <li>How Python reads multidimensional biological images.</li>
+    <li>How microscopy images are prepared for computational analysis.</li>
+    <li>Why preprocessing is necessary before applying computer vision algorithms.</li>
+</ul>
+
+<hr>
 
 <h2>Learning Outcomes</h2>
-<p>After completing this phase, I understand:</p>
+
+<p>After completing this phase, I now understand:</p>
+
 <ul>
-  <li>What developmental microscopy data looks like.</li>
-  <li>Why microscopy datasets are 4-dimensional.</li>
-  <li>How Zarr stores biological images.</li>
-  <li>How Python reads multidimensional datasets.</li>
-  <li>Why preprocessing is required before computer vision algorithms.</li>
-  <li>How classical computer vision can detect candidate nuclei.</li>
-  <li></li>  
+    <li>What developmental microscopy datasets look like.</li>
+    <li>Why embryo imaging produces 4D datasets.</li>
+    <li>How the Zarr format efficiently stores very large biological datasets.</li>
+    <li>How Python accesses multidimensional arrays without loading the entire dataset into memory.</li>
+    <li>How microscopy images differ from ordinary photographs.</li>
+    <li>How fluorescence intensity values are represented numerically.</li>
+    <li>Why normalization is often required before computer vision algorithms.</li>
+    <li>How classical computer vision methods can detect candidate nuclei.</li>
 </ul>
 
+<hr>
+
 <h2>Step 1 — Opening the Dataset</h2>
-<p>The dataset was first opened as a Zarr Group.</p>
- <div class="highlight-box"><em>
-  <p>import zarr</p>
-  <p>embryo = zarr.open(train_dir / "6bba_cf35214c.zarr",mode="r")</p>
-  </em></div> 
-  
+
+<p>
+The first task was to open the microscopy dataset stored in the Zarr format.
+</p>
+
+<div class="highlight-box">
+<pre><code>
+import zarr
+
+embryo = zarr.open(
+    train_dir / "6bba_cf35214c.zarr",
+    mode="r"
+)
+</code></pre>
+</div>
+
 <h3>What happens here?</h3>
-<p>Unlike JPEG or PNG files, biological microscopy experiments are stored as hierarchical datasets.
-zarr.open() opens the dataset but does not load the entire embryo into memory.</p>
 
-<p>Instead, it creates a pointer to the data.Think of it as opening a library catalogue rather than reading every book.</p>
+<p>
+Unlike JPEG or PNG images, fluorescence microscopy experiments are stored as hierarchical datasets capable of containing extremely large multidimensional arrays.
+</p>
 
+<p>
+Calling <code>zarr.open()</code> does <strong>not</strong> load the entire embryo into memory. Instead, Python creates a reference to the dataset, allowing portions of the data to be accessed only when required.
+</p>
 
+<p>
+An easy analogy is opening a library catalogue rather than taking every book off the shelves at once.
+</p>
+
+<hr>
 
 <h2>Step 2 — Understanding the Object</h2>
-<div class="highlight-box"><em>
-<p>type(embryo)</p>
-</em></div> 
-  
-<div class="highlight-box"><em>
-<p>Output</p>
-<p>zarr.core.group.Group</p>
-</em></div> 
-  
-<p><b>Meaning:</b></p>
-<p>The embryo itself is not an image. It is a container holding multiple arrays and metadata.</p>
-<p>Similar to:</p>
-<p>Folder</p>
-   <p>└── Images</p> 
-   <p>└── Metadata</p> 
-    <p>└── Labels</p>
 
-<h2>Step 3 — Looking Inside</h2>
-<div class="highlight-box"><em>
- <p>list(embryo.keys())</p>
-</em></div> 
-  
-  <div class="highlight-box"><em>
- <p> Output: ['0']</p>
-</em></div> 
-  <p><b>Meaning:</b></p>
-<p>The Zarr group contains one array named "0".</p>
+<div class="highlight-box">
+<pre><code>
+type(embryo)
+</code></pre>
+</div>
+
+<div class="highlight-box">
+<pre><code>
+Output
+
+zarr.core.group.Group
+</code></pre>
+</div>
+
+<h3>Interpretation</h3>
+
+<p>
+The embryo itself is not an image.
+Instead, it is a container that stores multiple datasets together with metadata.
+</p>
+
+<p>Conceptually, the structure resembles:</p>
+
+<pre>
+Embryo
+│
+├── Images
+├── Metadata
+└── Labels
+</pre>
+
+<hr>
+
+<h2>Step 3 — Looking Inside the Dataset</h2>
+
+<div class="highlight-box">
+<pre><code>
+list(embryo.keys())
+</code></pre>
+</div>
+
+<div class="highlight-box">
+<pre><code>
+Output
+
+['0']
+</code></pre>
+</div>
+
+<h3>Interpretation</h3>
+
+<p>
+The Zarr group contains one primary multidimensional array named <code>"0"</code>, which stores the fluorescence microscopy images.
+</p>
+
+<hr>
 
 <h2>Step 4 — Accessing the Image Data</h2>
-  <div class="highlight-box"><em>
-    <p>image = embryo["0"]</p>
-    <p>type(image)</p>
-    </em></div> 
 
-  <div class="highlight-box"><em>
-<p>Output</p>
-<p>zarr.core.array.Array</p>
-<p><b>Meaning:</b></p>
-<p>This is the actual multidimensional microscopy image.</p>
+<div class="highlight-box">
+<pre><code>
+image = embryo["0"]
 
-<h2>Step 5 — Understanding the Dimensions</h2>
-<div class="highlight-box"><em>
- <p>image.shape</p> 
-</em></div> 
-  <div class="highlight-box"><em>
-  Output
-<p>(100,64,256,256)</p>
-   </em></div>  
+type(image)
+</code></pre>
+</div>
 
-<p>This became one of the most important observations.</p>
-<p>100 → Time
-<p>64 → Z slices</p>
-<p>256 → Height</p>
-<p>256 → Width</p>
-<p>This means
+<div class="highlight-box">
+<pre><code>
+Output
 
-<p>The embryo is not one image.It is 100 × 64 individual microscope slices.</p>
-</p>In total, 100 × 64 = 6400 images representing one developing embryo. </p>
+zarr.core.array.Array
+</code></pre>
+</div>
 
-<h2>tep 6 — Extracting One Image</h2>
-<div class="highlight-box"><em>
-    <p>slice_2d = image[0,32]</p>
- </em></div>  
-   <p> Explanation</p>
-<p>Time = 0 -> Z Slice = 32</p>
-<p>Result : A single 2D optical slice through the embryo.</p>
+<h3>Interpretation</h3>
+
+<p>
+This object represents the actual microscopy dataset. Unlike ordinary photographs, it is a multidimensional numerical array describing fluorescence intensities across space and time.
+</p>
+
+<hr>
+
+<h2>Step 5 — Understanding the Dataset Dimensions</h2>
+
+<div class="highlight-box">
+<pre><code>
+image.shape
+</code></pre>
+</div>
+
+<div class="highlight-box">
+<pre><code>
+Output
+
+(100, 64, 256, 256)
+</code></pre>
+</div>
+
+<h3>Interpretation</h3>
+
+<p>
+This became one of the most important observations during the exploration phase.
+</p>
+
+<ul>
+    <li><strong>100</strong> → Time points</li>
+    <li><strong>64</strong> → Z slices</li>
+    <li><strong>256</strong> → Image height</li>
+    <li><strong>256</strong> → Image width</li>
+</ul>
+
+<p>
+Rather than being a single image, the embryo consists of a sequence of three-dimensional image stacks collected over time.
+Each time point contains 64 optical slices through the embryo.
+</p>
+
+<p>
+This means one embryo contains:
+</p>
+
+<p style="text-align:center;">
+<strong>100 × 64 = 6,400 individual microscopy images</strong>
+</p>
+
+<p>
+Together, these slices capture the three-dimensional structure of the embryo as it develops over time, producing what is commonly referred to as a <strong>4D microscopy dataset</strong>.
+</p>
+
+<h2>Step 6 — Extracting a Single Optical Slice</h2>
+
+<p>
+To begin exploring the dataset, I extracted a single two-dimensional image from the four-dimensional microscopy dataset.
+</p>
+
+<div class="highlight-box">
+<pre><code>
+slice_2d = image[0, 32]
+</code></pre>
+</div>
+
+<h3>Interpretation</h3>
+
+<ul>
+    <li><strong>Time = 0</strong> (the first time point)</li>
+    <li><strong>Z = 32</strong> (the middle optical slice)</li>
+</ul>
+
+<p>
+The result is a single grayscale image representing one thin optical section through the embryo.
+Although the complete dataset is four-dimensional, most image processing algorithms operate on one two-dimensional image at a time, making this a useful starting point for exploration.
+</p>
+
+<hr>
 
 <h2>Step 7 — Displaying the Image</h2>
-<div class="highlight-box"><em>
-<p>plt.imshow(slice_2d,cmap="gray")</p>
-<p>plt.axis("off")</p>
-<p>plt.show()</p>
- </em></div>  
-<p>Explanation : Matplotlib converts the numerical pixel intensities into a grayscale image.</p>
 
-<p>Important realization - Computers do not see images.They see matrices.Humans interpret those matrices as images.</p>
+<div class="highlight-box">
+<pre><code>
+plt.imshow(slice_2d, cmap="gray")
+plt.axis("off")
+plt.show()
+</code></pre>
+</div>
+
+<h3>Interpretation</h3>
+
+<p>
+Matplotlib converts the numerical pixel intensity values into a grayscale image that can be viewed by humans.
+</p>
+
+<p>
+One important realization during this step was that computers do not actually "see" images.
+They only process arrays of numbers, where each number represents the fluorescence intensity measured by the microscope.
+Humans interpret those numerical matrices as images.
+</p>
+
+<hr>
 
 <h2>Step 8 — Exploring Multiple Z Slices</h2>
-<div class="highlight-box"><em>
-  z_slices=[0,10,20,30,40,50]
-   </em></div>  
-Each slice was displayed.
 
-  Observation:  
-  - Different slices contain different numbers of nuclei. Slice 0 contains relatively few nuclei.
-  - Slices around 20–50 contain many nuclei.
-  - Nuclei appear larger or smaller depending on where the slice intersects them.
+<div class="highlight-box">
+<pre><code>
+z_slices = [0, 10, 20, 30, 40, 50]
+</code></pre>
+</div>
 
-  Scientific Interpretation
-A nucleus is three-dimensional.Cutting through its center produces a larger circle.Cutting near the edge produces a smaller circle.
+<p>
+To better understand the three-dimensional structure of the embryo, I examined several optical slices taken at different depths.
+</p>
 
-Step 9 — Interactive Z Viewer
-@interact(z=(0,63))
-     </em></div>  
-Purpose
-Instead of manually changing
+<h3>Observations</h3>
 
-image[0,z]
-   </em></div>  
-an interactive slider allows continuous exploration through the embryo.
-This mimics software used by computational biologists such as Napari and Fiji.
+<ul>
+    <li>Different slices contained different numbers of nuclei.</li>
+    <li>Slice 0 contained relatively few visible nuclei.</li>
+    <li>Middle slices (approximately 20–50) contained many more nuclei.</li>
+    <li>The apparent size of nuclei changed depending on the slice location.</li>
+</ul>
 
-Step 10 — Pixel Intensity Distribution
-plt.hist(slice_2d.ravel(),bins=100)
-   </em></div>  
-Explanation
-ravel() converts the 2D image into a 1D vector.
+<h3>Scientific Interpretation</h3>
 
-Instead of visualizing location,
+<p>
+A nucleus is a three-dimensional object.
+When an optical slice passes through its center, it appears as a larger circular structure.
+When the slice passes near the edge of the nucleus, it appears much smaller.
+</p>
 
-we visualize brightness.
+<p>
+This illustrates an important concept in microscopy: each two-dimensional image is only one thin section of a much larger three-dimensional biological structure.
+</p>
 
-Purpose
+<hr>
 
-To understand how pixel intensities are distributed.
+<h2>Step 9 — Interactive Z-Stack Exploration</h2>
 
-This is useful for selecting thresholds in later image processing steps.
+<div class="highlight-box">
+<pre><code>
+@interact(z=(0, 63))
 
-Step 11 — Checking Intensity Range
-slice_2d.min(),slice_2d.max()
-   </em></div>  
+image[0, z]
+</code></pre>
+</div>
+
+<h3>Purpose</h3>
+
+<p>
+Instead of manually changing the slice index each time, I used an interactive slider to scroll through the embryo along the Z-axis.
+</p>
+
+<p>
+This approach closely resembles software commonly used by computational biologists, such as Napari and Fiji, where researchers navigate through volumetric microscopy data interactively.
+</p>
+
+<p>
+Exploring the dataset in this way makes it much easier to understand the spatial organization of cells within the embryo.
+</p>
+
+<hr>
+
+<h2>Step 10 — Investigating Pixel Intensity Distribution</h2>
+
+<div class="highlight-box">
+<pre><code>
+plt.hist(slice_2d.ravel(), bins=100)
+</code></pre>
+</div>
+
+<h3>What happens here?</h3>
+
+<p>
+The <code>ravel()</code> function converts the two-dimensional image into a one-dimensional vector containing every pixel value.
+Instead of examining where pixels are located, this histogram shows how bright or dark they are.
+</p>
+
+<h3>Purpose</h3>
+
+<p>
+Understanding the intensity distribution is important because many image processing algorithms depend on pixel brightness.
+The histogram provides insight into the dynamic range of fluorescence values and helps guide later preprocessing decisions, such as threshold selection and normalization.
+</p>
+
+<hr>
+
+<h2>Step 11 — Measuring the Intensity Range</h2>
+
+<div class="highlight-box">
+<pre><code>
+slice_2d.min(), slice_2d.max()
+</code></pre>
+</div>
+
+<div class="highlight-box">
+<pre><code>
 Output
+
 8
-
 1380
-   </em></div>  
-Interpretation
-The microscope stores raw fluorescence intensity values.
+</code></pre>
+</div>
 
-This is not a standard image scaled between 0–255 or 0–1.
+<h3>Interpretation</h3>
 
-Step 12 — Why Blob Detection Initially Failed
-First attempt
-  
+<p>
+Unlike ordinary photographs, microscopy images store raw fluorescence intensity measurements rather than values scaled between 0–255.
+</p>
+
+<p>
+The intensity values in this image ranged from <strong>8</strong> to <strong>1380</strong>, reflecting the amount of fluorescence detected at each pixel by the microscope.
+</p>
+
+<p>
+These values represent physical measurements rather than display colours, which is why additional preprocessing is often required before applying computer vision algorithms.
+</p>
+
+<hr>
+
+<h2>Step 12 — Why Blob Detection Initially Failed</h2>
+
+<p>
+My first attempt at detecting nuclei used the Difference of Gaussians (DoG) blob detection algorithm directly on the raw image.
+</p>
+
+<div class="highlight-box">
+<pre><code>
 blobs = blob_dog(
     slice_2d,
     min_sigma=2,
@@ -219,106 +431,300 @@ blobs = blob_dog(
 )
 
 len(blobs)
-   </em></div>  
-  
+</code></pre>
+</div>
+
+<div class="highlight-box">
+<pre><code>
 Output
+
 0
-   </em></div>  
-Interpretation
-The algorithm did not detect any nuclei.
+</code></pre>
+</div>
 
-Instead of assuming the algorithm was incorrect,
+<h3>Interpretation</h3>
 
-the question became
+<p>
+The algorithm failed to detect any nuclei.
+</p>
 
-Why?
-This marks the transition from programming to scientific debugging.
-Step 13 — Image Normalization
+<p>
+Rather than assuming the algorithm was incorrect, this became an opportunity to ask an important scientific question:
+</p>
+
+<blockquote>
+Why did the algorithm fail?
+</blockquote>
+
+<p>
+This marked a transition from simply writing code to debugging computational methods through scientific reasoning.
+</p>
+
+<hr>
+
+<h2>Step 13 — Image Normalization</h2>
+
+<div class="highlight-box">
+<pre><code>
 from skimage import exposure
 
 slice_norm = exposure.rescale_intensity(
     slice_2d,
-    out_range=(0,1)
+    out_range=(0, 1)
 )
-   </em></div>  
-Purpose
-Rescale raw microscope intensities
+</code></pre>
+</div>
 
-8 → 1380
-into
-0 → 1
-This improves the performance of many computer vision algorithms.
-Think of it like changing units from centimeters to meters.
+<h3>Purpose</h3>
 
-The object remains unchanged.
+<p>
+The raw fluorescence intensities were rescaled from their original range (8–1380) to a normalized range between 0 and 1.
+</p>
 
-Only the scale changes.
+<p>
+Normalization does not change the biological structures present in the image.
+Instead, it changes only the numerical scale, making the data more suitable for many computer vision algorithms.
+</p>
 
-Step 14 — Verifying Normalization
-slice_norm.min(),slice_norm.max()
-   </em></div>  
+<p>
+An intuitive analogy is converting measurements from centimeters to meters.
+The object itself remains unchanged; only the units are different.
+</p>
+
+<hr>
+
+<h2>Step 14 — Verifying the Normalization</h2>
+
+<div class="highlight-box">
+<pre><code>
+slice_norm.min(), slice_norm.max()
+</code></pre>
+</div>
+
+<div class="highlight-box">
+<pre><code>
 Output
+
 0.0
-
 1.0
-   </em></div>  
-Confirmation
-The image is now normalized.
+</code></pre>
+</div>
 
-Step 15 — Blob Detection
+<h3>Interpretation</h3>
+
+<p>
+The normalization step successfully transformed the intensity values into the expected range.
+This confirmed that the image was now ready for further computational analysis.
+</p>
+
+<hr>
+
+<h2>Step 15 — Detecting Candidate Nuclei</h2>
+
+<div class="highlight-box">
+<pre><code>
 from skimage.feature import blob_dog
+
 blobs = blob_dog(
     slice_norm,
     min_sigma=2,
     max_sigma=6,
     threshold=0.05
 )
+
 len(blobs)
-   </em></div>  
+</code></pre>
+</div>
 
-  Output
+<div class="highlight-box">
+<pre><code>
+Output
+
 24
-   </em></div>  
+</code></pre>
+</div>
 
-  
-  Interpretation: 
-The algorithm identified 24 candidate nuclei.These are candidate detections, not confirmed biological cells.
-Understanding Difference of Gaussians (DoG). DoG is a classical computer vision algorithm.
-Instead of understanding biology,it searches for bright approximately circular similarly sized objects.
-Those objects are called blobs. Since nuclei appear as bright blobs, DoG is an effective baseline detector.
+<h3>Interpretation</h3>
 
-Blob Detection Output
-Each detected blob is represented as
-[y,x,sigma]
-Meaning
-y -> Vertical coordinate,  x -> Horizontal coordinate ,sigma ->Estimated radius
-The algorithm therefore returns measurements,not images.
+<p>
+After normalization, the algorithm identified <strong>24 candidate nuclei</strong>.
+These detections represent potential cell nuclei based on their appearance in the image, rather than biologically confirmed cells.
+</p>
 
-  Current Pipeline
+<h3>Understanding Difference of Gaussians (DoG)</h3>
+
+<p>
+Difference of Gaussians (DoG) is a classical computer vision algorithm designed to detect blob-like structures.
+Rather than understanding biological concepts such as cells or nuclei, it simply searches for bright, approximately circular objects of a particular size.
+</p>
+
+<p>
+Since fluorescently labelled nuclei appear as bright circular regions in microscopy images, DoG provides an effective baseline method for identifying candidate nuclei before moving on to more advanced approaches.
+</p>
+
+<h3>Blob Detection Output</h3>
+
+<p>
+Each detected blob is represented as:
+</p>
+
+<div class="highlight-box">
+<pre><code>
+[y, x, sigma]
+</code></pre>
+</div>
+
+<ul>
+    <li><strong>y</strong> → Vertical image coordinate</li>
+    <li><strong>x</strong> → Horizontal image coordinate</li>
+    <li><strong>sigma</strong> → Estimated blob radius</li>
+</ul>
+
+<p>
+Rather than returning images, the algorithm produces quantitative measurements describing the location and approximate size of each detected structure.
+</p>
+
+<hr>
+  <h2>Current Computational Pipeline</h2>
+
+<p>
+The work completed in this notebook can be summarized as the following computational pipeline:
+</p>
+
+<div class="highlight-box">
+<pre>
 Microscope
-    ↓
-Raw Image
-    ↓
-Zarr Storage
-    ↓
-Python
-    ↓
-Extract One Slice
-    ↓
-Visualize Image
-    ↓
-Explore Z Dimension
-    ↓
-Study Pixel Intensities
-    ↓
+      ↓
+Raw Fluorescence Images
+      ↓
+Zarr Dataset
+      ↓
+Load Dataset in Python
+      ↓
+Explore Dataset Structure
+      ↓
+Extract Individual 2D Slice
+      ↓
+Visualize Microscopy Image
+      ↓
+Explore Z-Dimension
+      ↓
+Analyze Pixel Intensity Distribution
+      ↓
 Normalize Image
-    ↓
-Blob Detection
-    ↓
-Candidate Nuclei
+      ↓
+Difference of Gaussians (DoG)
+      ↓
+Candidate Nuclei Detection
+</pre>
+</div>
 
+<hr>
 
-NEXT probably : 
+<h2>Key Takeaways</h2>
 
-Visualize detected nuclei ? IDK 
+<p>
+Although no artificial intelligence model was trained during this phase, this exploration established the computational foundation required for future analysis.
+</p>
 
+<ul>
+    <li>Biological microscopy data is fundamentally different from ordinary photographs.</li>
+
+    <li>Embryo datasets are four-dimensional, containing both spatial and temporal information.</li>
+
+    <li>The Zarr format enables efficient storage and retrieval of extremely large microscopy datasets.</li>
+
+    <li>Computers analyze numerical intensity values rather than visual images.</li>
+
+    <li>Image preprocessing plays a critical role before applying any computer vision or machine learning algorithm.</li>
+
+    <li>Classical computer vision methods can successfully identify candidate nuclei and provide a useful baseline for more advanced approaches.</li>
+</ul>
+
+<hr>
+
+<h2>Current Progress</h2>
+
+<p>
+This notebook represents the first stage of a much larger computational biology project.
+Rather than focusing immediately on building an AI model, the emphasis has been on understanding the data itself—how it is generated, how it is stored, how it can be explored computationally, and what challenges arise before meaningful analysis can begin.
+</p>
+
+<p>
+By the end of this phase, I was able to load multidimensional microscopy datasets, navigate through time and depth, interpret fluorescence intensity values, perform image normalization, and detect candidate nuclei using a classical computer vision algorithm.
+</p>
+
+<p>
+Although these may appear to be simple preprocessing steps, they form the foundation upon which every downstream analysis depends. Understanding the data is often just as important as building the models that analyze it.
+</p>
+
+<hr>
+
+<h2>Where This Research Goes Next</h2>
+
+<p>
+At this stage, the algorithm has identified <strong>where it believes the nuclei are located</strong>.
+The next challenge is determining whether those detections actually correspond to real biological structures.
+</p>
+
+<p>
+The next research notebook will focus on visualizing the detected nuclei directly on the microscopy images, allowing each candidate detection to be inspected and evaluated. This will provide a clearer understanding of the strengths and limitations of classical computer vision methods when applied to fluorescence microscopy data.
+</p>
+
+<p>
+From there, the project will gradually move beyond individual image slices toward understanding the embryo as a complete dynamic system.
+Future investigations may include:
+</p>
+
+<ul>
+    <li>Visualizing detected nuclei on microscopy images.</li>
+
+    <li>Comparing detected nuclei with biological ground-truth annotations.</li>
+
+    <li>Segmenting individual cells instead of detecting approximate locations.</li>
+
+    <li>Tracking nuclei across consecutive time points.</li>
+
+    <li>Studying cell movement and division during embryonic development.</li>
+
+    <li>Exploring deep learning approaches for automated nucleus detection and segmentation.</li>
+
+    <li>Building an end-to-end computational pipeline for developmental biology image analysis.</li>
+</ul>
+
+<p>
+Each step raises new questions, and those questions will guide the direction of future notebooks.
+Rather than presenting only polished results, this series aims to document the entire learning process—from understanding microscopy data to developing intelligent computational tools for studying embryonic development.
+</p>
+
+<hr>
+
+<h2>Research Notebook</h2>
+
+<p>
+This notebook is intentionally written as an evolving research journal rather than a finished tutorial.
+Every experiment, observation, success, and unexpected result contributes to a deeper understanding of how computational methods can be applied to developmental biology.
+</p>
+
+<p>
+As the project progresses, these notes will continue to expand—from classical image processing to computer vision, machine learning, and ultimately artificial intelligence models capable of analyzing complex biological systems.
+</p>
+
+<div class="highlight-box">
+<p><strong>Research Note #001 Status:</strong> Complete ✓</p>
+
+<p><strong>Next Notebook:</strong> Visualizing and Evaluating Candidate Nuclei in 4D Fluorescence Microscopy</p>
+
+<p><em>To be continued...</em></p>
+</div>
+
+</div>
+</div>
+
+<footer>
+    <p>&copy; 2026 Kavya Krishnamurthy | The Embryo Files</p>
+</footer>
+
+</body>
+</html>
+<hr>

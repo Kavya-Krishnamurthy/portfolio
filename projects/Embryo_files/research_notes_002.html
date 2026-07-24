@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Embryo Files | Research Notes #001</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+<header>
+
+    <h1>Research Notes #002 — Building a Foundation for 4D Embryo Analysis: My Journey from Raw Microscopy Data to Cell Tracking</h1>
+
+    <p class="subtitle">
+        Exploring Developmental Biology, Computational Biology & Artificial Intelligence
+    </p>
+
+    <p>
+        <strong>Author:</strong> Kavya Krishnamurthy<br>
+        B.E. Computer Science Engineering | M.Tech. Bioinformatics
+    </p>
+
+    <p class="post-meta">
+        July 2026 • Developmental Biology • Bioinformatics • Computer Vision • AI
+    </p>
+
+    <nav>
+        <ul class="nav-links">
+            <li><a href="index.html">Home</a></li>
+            <li><a href="case-studies.html">Case Studies</a></li>
+            <li><a href="contact.html">Contact</a></li>
+        </ul>
+    </nav>
+
+</header>
+
+<div class="blog-container">
+
+<div class="card">
+
+
+<h3>Project Background</h3>
+
+<p>
+I started this project with a simple objective: understand how modern computational methods analyze developing embryos captured using fluorescence microscopy.
+</p>
+
+<p>
+Although I have a background in Bioinformatics, I quickly realized that modern microscopy datasets are significantly different from the datasets I had previously worked with. Instead of spreadsheets or sequencing data, I was dealing with multidimensional image volumes that evolve over time.
+</p>
+
+<p>
+Rather than treating this as another coding exercise, I decided to approach it as an independent research project. My goal was not simply to produce results, but to understand every stage of the computational pipeline from first principles.
+</p>
+
+<hr>
+
+<h3>Understanding the Dataset Structure</h3>
+
+<p>
+The first challenge was understanding how the microscopy data was organized.
+</p>
+
+<p>
+Unlike conventional image datasets containing JPEG or PNG images, the embryo data was stored using the Zarr format. Initially this was unfamiliar territory.
+</p>
+
+<p>
+After exploring the directory structure, I found that each embryo consisted of a four-dimensional image volume represented by:
+</p>
+
+<pre>
+(T, Z, Y, X)
+</pre>
+
+<ul>
+<li><strong>T</strong> – Time</li>
+<li><strong>Z</strong> – Depth (Optical Sections)</li>
+<li><strong>Y</strong> – Image Height</li>
+<li><strong>X</strong> – Image Width</li>
+</ul>
+
+<p>
+This was an important conceptual shift.
+</p>
+
+<p>
+I was no longer working with individual images.
+Instead, I was working with a living biological system evolving through space and time.
+</p>
+
+<hr>
+
+<h3>Reading Large Image Volumes Efficiently</h3>
+
+<p>
+Since microscopy datasets can easily occupy several gigabytes of storage, loading everything into memory is impractical.
+</p>
+
+<p>
+I explored the Zarr storage format and learned how it enables lazy loading.
+</p>
+
+<p>
+Instead of reading the complete dataset, only the requested chunks are loaded into memory when needed.
+</p>
+
+<p>
+This allows efficient exploration of very large biological datasets without exhausting system resources.
+</p>
+
+<hr>
+
+<h3>Visualizing the Embryo</h3>
+
+<p>
+Once I could access the image volumes, the next objective was visualization.
+</p>
+
+<p>
+Initially I displayed individual optical slices using Matplotlib.
+</p>
+
+<p>
+Examining different Z planes revealed an important observation:
+</p>
+
+<ul>
+<li>Some slices contained only a few nuclei.</li>
+<li>Middle slices contained the highest concentration of cells.</li>
+<li>The embryo occupies only a portion of the imaging volume.</li>
+</ul>
+
+<p>
+This immediately demonstrated why analysing only a single image slice is insufficient.
+</p>
+
+<p>
+The embryo exists in three dimensions, and meaningful biological interpretation requires examining the complete volume.
+</p>
+
+<hr>
+
+<h3>Interactive Exploration</h3>
+
+<p>
+To improve exploration, I developed an interactive viewer using Jupyter widgets.
+</p>
+
+<p>
+Instead of repeatedly modifying array indices and rerunning notebook cells, I created sliders that allowed rapid navigation through:
+</p>
+
+<ul>
+<li>Time points</li>
+<li>Z slices</li>
+<li>Individual image planes</li>
+</ul>
+
+<p>
+This transformed dataset exploration from a static process into an interactive one.
+</p>
+
+<p>
+Being able to scroll through hundreds of image slices significantly improved my intuition about embryo morphology.
+</p>
+
+<hr>
+
+<h3>Understanding Image Intensities</h3>
+
+<p>
+Another concept I investigated was pixel intensity.
+</p>
+
+<p>
+Unlike ordinary photographs, fluorescence microscopy images represent emitted light intensity rather than color.
+</p>
+
+<p>
+Each pixel stores a numerical value indicating the amount of detected fluorescence.
+</p>
+
+<p>
+By generating intensity histograms, I observed that most pixels belong to the background while relatively few correspond to fluorescent nuclei.
+</p>
+
+<p>
+Understanding this distribution later became important when studying thresholding and object detection.
+</p>
+
+<hr>
+
+<h3>Detecting Candidate Nuclei</h3>
+
+<p>
+Once I became familiar with the image characteristics, I began exploring methods for automatically identifying candidate nuclei.
+</p>
+
+<p>
+My initial focus was on blob detection using the Difference of Gaussians (DoG) approach.
+</p>
+
+<p>
+Rather than treating it as a black-box algorithm, I spent time understanding the mathematical intuition behind Gaussian smoothing, scale-space representation, and why subtracting two blurred images enhances approximately spherical structures.
+</p>
+
+<p>
+This helped me understand why nuclei naturally appear as blobs within fluorescence microscopy images.
+</p>
+
+<hr>
+
+<h3>Thinking in Scale Space</h3>
+
+<p>
+One concept that significantly changed my understanding was scale space.
+</p>
+
+<p>
+Objects do not appear identical at different resolutions.
+</p>
+
+<p>
+Small nuclei and large nuclei require different observation scales.
+</p>
+
+<p>
+By generating Gaussian representations using multiple sigma values, I observed how image structures gradually simplified as the blur increased.
+</p>
+
+<p>
+This provided a much deeper appreciation of why blob detectors search across multiple scales rather than relying on a single image resolution.
+</p>
+
+<hr>
+
+<h3>From Detection to Tracking</h3>
+
+<p>
+At this stage I encountered an important realization.
+</p>
+
+<p>
+Detecting nuclei solves only part of the biological problem.
+</p>
+
+<p>
+The next challenge is determining whether a nucleus observed in one time point corresponds to the same biological cell in subsequent observations.
+</p>
+
+<p>
+This shifted my focus from image processing toward object tracking.
+</p>
+
+<hr>
+
+<h3>Exploring Tracking Algorithms</h3>
+
+<p>
+My first implementation focused on nearest-neighbor tracking.
+</p>
+
+<p>
+The underlying assumption is simple:
+</p>
+
+<p>
+Since cells generally move gradually, the closest nucleus in the following frame is likely to represent the same biological object.
+</p>
+
+<p>
+Although this works reasonably well under simple conditions, it becomes unreliable whenever neighboring cells move close together or exchange positions.
+</p>
+
+<p>
+This revealed that cell tracking is fundamentally an identity preservation problem rather than merely a localization problem.
+</p>
+
+<hr>
+
+<h3>Introduction to Global Optimization</h3>
+
+<p>
+To overcome the limitations of nearest-neighbor tracking, I began studying assignment optimization techniques.
+</p>
+
+<p>
+The Hungarian Algorithm provided an elegant solution.
+</p>
+
+<p>
+Instead of matching cells independently, it computes the globally optimal assignment between two consecutive frames while minimizing the overall matching cost.
+</p>
+
+<p>
+Understanding this algorithm marked my first exposure to optimization techniques commonly used in biological image analysis.
+</p>
+
+<hr>
+
+<h3>Technical Skills Applied</h3>
+
+<ul>
+<li>Python</li>
+<li>NumPy</li>
+<li>Matplotlib</li>
+<li>SciPy</li>
+<li>Zarr</li>
+<li>Jupyter Notebook</li>
+<li>Interactive Widgets (ipywidgets)</li>
+<li>Difference of Gaussians (DoG)</li>
+<li>Blob Detection</li>
+<li>Nearest Neighbor Tracking</li>
+<li>Hungarian Assignment Algorithm</li>
+<li>4D Image Visualization</li>
+</ul>
+
+<hr>
+
+<h3>Key Lessons Learned</h3>
+
+<ul>
+<li>Large microscopy datasets require memory-efficient storage and loading techniques.</li>
+<li>Understanding biological image formation is just as important as understanding image processing algorithms.</li>
+<li>Visualization often reveals insights that numerical analysis alone cannot.</li>
+<li>Detecting objects and preserving their identity are fundamentally different computational problems.</li>
+<li>Many biological image analysis problems can be reformulated as optimization problems.</li>
+<li>Building intuition before implementing algorithms leads to a much deeper understanding of the complete computational pipeline.</li>
+</ul>
+
+<hr>
+
+<h3>Next Objectives</h3>
+
+<ul>
+<li>Study cell division events and lineage reconstruction.</li>
+<li>Investigate graph-based tracking algorithms.</li>
+<li>Understand cost matrix construction in greater detail.</li>
+<li>Build a modular Cell3D Explorer capable of visualizing detections, tracks, and lineage trees.</li>
+<li>Explore deep learning approaches for nucleus detection and cell tracking.</li>
+</ul>
+
+<hr>
+
+<p><strong>Status:</strong> Work in Progress</p>
+
+<p>
+These technical notes will continue to evolve as the project progresses, documenting both implementation details and conceptual understanding developed throughout the research.
+</p>
+
+
+
+<div class="highlight-box">
+<p><strong>Research Note #002 Status:</strong> Complete ✓</p>
+
+<p><strong>Next Notebook:</strong> Visualizing and Evaluating Candidate Nuclei in 4D Fluorescence Microscopy</p>
+
+<p><em>To be continued...</em></p>
+</div>
+
+</div>
+</div>
+
+<footer>
+    <p>&copy; 2026 Kavya Krishnamurthy | The Embryo Files</p>
+</footer>
+
+</body>
+</html>
+<hr>
